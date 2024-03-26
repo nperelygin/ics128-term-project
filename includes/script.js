@@ -50,11 +50,17 @@ $("#map-container").on("dragover", (event) => {
 });
 
 $(".marker").on("dragstart", (event) => {
-    event.dataTransfer.setData("text", event.target.id);
+    event.originalEvent.dataTransfer.effectAllowed = "move";
+    event.originalEvent.dataTransfer.setData("text", event.target.id);
+    console.log(event.originalEvent.dataTransfer.getData("text"));
 });
-
 
 $("#map-container").on("drop", (event) => {
     event.preventDefault();
-    console.log(event.dataTransfer.getData("text"));
+    event.originalEvent.dataTransfer.dropEffect = "move";
+})
+
+$(".marker").on("dragend", (event) => {
+    event.originalEvent.dataTransfer.setData("text", event.target.id);
+    console.log(event.originalEvent.dataTransfer.getData("text"));
 })
