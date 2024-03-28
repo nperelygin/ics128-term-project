@@ -28,15 +28,107 @@ class MapBuilder {
     // Load the MapBuilder
     async LoadMapBuilder() {
         try {
-            let itemResponse = await fetch('https://natalie.json.compsci.cc/items');
-            let locationResponse = await fetch('https://natalie.json.compsci.cc/locations');
+            let itemResponse = await fetch('https://natalie.json.compsci.cc/items', {
+                method: "GET",
+                mode: "cors",
+                cache: "default",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            let locationResponse = await fetch('https://natalie.json.compsci.cc/locations', {
+                method: "GET",
+                mode: "cors",
+                cache: "default",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
             if (itemResponse.status === 200 && locationResponse.status === 200) {
-                this.locations = await locationResponse.json();
-                this.assets = await itemResponse.json();
+                this._locations = await locationResponse.json();
+                this._assets = await itemResponse.json();
                 console.log("Map data loaded");
             }
         } catch(e) {
             console.log("Map data could not be loaded");
+        }
+    }
+
+    // Save the MapBuilder
+
+    async SaveMap() {
+        try {
+            const locationResponse = await fetch("https://natalie.json.compsci.cc/locations", {
+                method: "POST",
+                headers: {
+                    "Content-Type":"application/json",
+                },
+                body: JSON.stringify(this._locations),
+            });
+
+            const result = await locationResponse.json();
+            console.log("Success", result);
+
+            const itemResponse = await fetch("https://natalie.json.compsci.cc/items", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(this._assets),
+            });
+
+            const result2 = await itemResponse.json();
+            console.log("Success", result2);
+
+        } catch (e) {
+            console.log("Error in saving data");
+        }
+    }
+
+    async ClearMap() {
+        try {
+            let itemResponse = await fetch('https://natalie.json.compsci.cc/items', {
+                method: "GET",
+                mode: "cors",
+                cache: "default",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            let locationResponse = await fetch('https://natalie.json.compsci.cc/locations', {
+                method: "GET",
+                mode: "cors",
+                cache: "default",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            let locations = locationResponse.json();
+            console.log(locations);
+            let items = itemResponse.json();
+
+            for (let i = 1; i < locations.length; i++) {
+                await fetch(`https://natalie.json.compsci.cc/locations/${i}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type":"appplication/json",
+                    }
+              });
+            }
+            
+            for (let j = 1; j < items.length; j++) {
+                await fetch(`https://natalie.json.compsci.cc/items/${i}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type":"appplication/json",
+                    }
+                });
+            }
+
+            console.log("Deleted");
+        } catch (e) {
+            console.log("could not delete data");
         }
     }
 }
@@ -44,23 +136,12 @@ class MapBuilder {
 let myMap = new MapBuilder();
 
 $("#load-map").on("click", myMap.LoadMapBuilder);
-
-$("#map-container").on("dragover", (event) => {
-    event.preventDefault();
-});
-
-$(".marker").on("dragstart", (event) => {
-    event.originalEvent.dataTransfer.effectAllowed = "move";
-    event.originalEvent.dataTransfer.setData("text", event.target.id);
-    console.log(event.originalEvent.dataTransfer.getData("text"));
-});
-
-$("#map-container").on("drop", (event) => {
-    event.preventDefault();
-    event.originalEvent.dataTransfer.dropEffect = "move";
+$("#load-map").on("click", () => {
+    for (key in myMap) {
+        $("#map-container").append(key);
+    }
 })
 
-$(".marker").on("dragend", (event) => {
-    event.originalEvent.dataTransfer.setData("text", event.target.id);
-    console.log(event.originalEvent.dataTransfer.getData("text"));
-})
+$("#save-map").on("click", myMap.SaveMap);
+
+$("#clear-map").on("click", myMap.ClearMap);
