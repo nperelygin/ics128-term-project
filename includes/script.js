@@ -4,9 +4,8 @@
 */
 
 class MapBuilder {
-    constructor(maplocations, items) {
-        this._locations = maplocations;
-        this._assets = items;
+    constructor() {
+        this.LoadMapBuilder();
     }
 
     get locations() {
@@ -45,12 +44,15 @@ class MapBuilder {
                 }
             });
             if (itemResponse.status === 200 && locationResponse.status === 200) {
-                this._locations = await locationResponse.json();
-                this._assets = await itemResponse.json();
-                console.log("Map data loaded");
+                this.locations = await locationResponse.json();
+                this.assets = await itemResponse.json();
+                $("#feedback").html("Map data ready to use");
+                $("#feedback").show();
+                
             }
         } catch(e) {
-            console.log("Map data could not be loaded");
+            $("#feedback").html("Map data could not be loaded. Try again later!");
+            $("#feedback").show();
         }
     }
 
@@ -63,7 +65,7 @@ class MapBuilder {
                 headers: {
                     "Content-Type":"application/json",
                 },
-                body: JSON.stringify(this._locations),
+                body: JSON.stringify(this.locations),
             });
 
             const result = await locationResponse.json();
@@ -74,7 +76,7 @@ class MapBuilder {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(this._assets),
+                body: JSON.stringify(this.assets),
             });
 
             const result2 = await itemResponse.json();
@@ -86,62 +88,16 @@ class MapBuilder {
     }
 
     async ClearMap() {
-        try {
-            let itemResponse = await fetch('https://natalie.json.compsci.cc/items', {
-                method: "GET",
-                mode: "cors",
-                cache: "default",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
-            let locationResponse = await fetch('https://natalie.json.compsci.cc/locations', {
-                method: "GET",
-                mode: "cors",
-                cache: "default",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
-
-            let locations = locationResponse.json();
-            console.log(locations);
-            let items = itemResponse.json();
-
-            for (let i = 1; i < locations.length; i++) {
-                await fetch(`https://natalie.json.compsci.cc/locations/${i}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type":"appplication/json",
-                    }
-              });
-            }
-            
-            for (let j = 1; j < items.length; j++) {
-                await fetch(`https://natalie.json.compsci.cc/items/${i}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type":"appplication/json",
-                    }
-                });
-            }
-
-            console.log("Deleted");
-        } catch (e) {
-            console.log("could not delete data");
-        }
+        
     }
+
+        
 }
 
 let myMap = new MapBuilder();
 
-$("#load-map").on("click", myMap.LoadMapBuilder);
 $("#load-map").on("click", () => {
-    for (key in myMap) {
-        $("#map-container").append(key);
+    for (let i = 0; i < myMap.locations.length; i++) {
+        document.querySelector("#map-container").innerHTML += `${i} ${myMap.locations[i]}`;
     }
 })
-
-$("#save-map").on("click", myMap.SaveMap);
-
-$("#clear-map").on("click", myMap.ClearMap);
