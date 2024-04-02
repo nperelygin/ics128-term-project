@@ -57,7 +57,7 @@ class MapBuilder {
     }
 
     // Save the MapBuilder
-
+    // NOT WORKING YET
     async SaveMap() {
         try {
             const locationResponse = await fetch("https://natalie.json.compsci.cc/locations", {
@@ -87,6 +87,7 @@ class MapBuilder {
         }
     }
 
+    // Clear the map and its data
     async ClearMap() {
         
     }
@@ -97,7 +98,21 @@ class MapBuilder {
 let myMap = new MapBuilder();
 
 $("#load-map").on("click", () => {
+    $("#map-container").html("");
+
     for (let i = 0; i < myMap.locations.length; i++) {
-        document.querySelector("#map-container").innerHTML += `${i} ${myMap.locations[i]}`;
+        for (let key in myMap.locations[i]) {
+            document.querySelector("#map-container").innerHTML += `${key}: ${myMap.locations[i][key]}`;
+        }
     }
-})
+});
+
+
+$("#add-item").on("click", () => {
+    myMap.assets.push({asset_name: "some asset", asset_color:"red"});
+});
+
+
+$("#add-location").on("click", () => {
+    myMap.locations.push({location_name: "some location", location_type: "some type"});
+});
