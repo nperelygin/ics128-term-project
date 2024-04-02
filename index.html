@@ -69,10 +69,33 @@
 
         <form id="add-item-form">
             <label for="item-name">Item Name</label>
+            <input type="text" id="item-name" name="item-name" class="form-control d-inline w-auto">
+
+            <select id="item-color" name="item-color" class="form-select w-auto d-inline">
+                <option value="black" class="text-bg-dark" selected>Black</option>
+                <option value="red" class="text-bg-danger">Red</option>
+                <option value="blue" class="text-bg-primary">Blue</option>
+                <option value="green" class="text-bg-success">Green</option>
+                <option value="gold" class="text-bg-warning">Gold</option>
+                <option value="white">White</option>
+            </select>
+
+            <button class="btn btn-secondary" type="submit" id="submit-item">Confirm</button>
         </form>
 
         <form id="add-location-form">
+            <label for="location-name">Location Name</label>
+            <input type="text" id="location-name" name="location-name" class="form-control">
 
+            <label for="location-type">Location Type</label>
+            <select id="location-type" name="location-type" class="form-select w-auto d-inline">
+                <option value="forest" selected>Forest</option>
+                <option value="water">Water</option>
+                <option value="settlement">Settlement</option>
+                <option value="anomaly">Anomaly</option>
+            </select>
+
+            <button class="btn btn-secondary" type="submit" id="submit-location">Confirm</button>
         </form>
 
         <!-- Map -->

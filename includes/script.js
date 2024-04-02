@@ -3,6 +3,16 @@
     Natalie Perelygin
 */
 
+let validateItem = (item) => {
+    let re = /\S/;
+
+    if (re.test(item)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 class MapBuilder {
     constructor() {
         this.LoadMapBuilder();
@@ -58,7 +68,7 @@ class MapBuilder {
 
     // Save the MapBuilder
     // NOT WORKING YET
-    async SaveMap() {
+    /* async SaveMap() {
         try {
             const locationResponse = await fetch("https://natalie.json.compsci.cc/locations", {
                 method: "POST",
@@ -90,13 +100,42 @@ class MapBuilder {
     // Clear the map and its data
     async ClearMap() {
         
+    } */
+
+    addItem() {
+        let itemName = $("#item-name").prop("value");
+        let itemColor = $("#item-color").prop("value");
+
+        if (validateItem(itemName)) {
+            let item = {
+                item_name: itemName,
+                item_color: itemColor
+            };
+
+            this.assets.push(item);
+        }
     }
 
+    addLocation() {
+        let itemName = $("#location-name").prop("value");
+        let itemType = $("#location-type").prop("value");
+
+        if (validateItem(itemName)) {
+            let item = {
+                location_name: itemName,
+                location_type: itemType
+            };
+            
+            this.locations.push(item);
+        }
+    }
         
 }
 
+// Instantiate a new MapBuilder object
 let myMap = new MapBuilder();
 
+// Display the data in the MapBuilder object when clicked
 $("#load-map").on("click", () => {
     $("#map-container").html("");
 
@@ -107,12 +146,16 @@ $("#load-map").on("click", () => {
     }
 });
 
-
+// Show/hide the form to add a new item/asset
 $("#add-item").on("click", () => {
-    myMap.assets.push({asset_name: "some asset", asset_color:"red"});
+    // myMap.assets.push({asset_name: "some asset", asset_color:"red"});
+    $("#add-item-form").toggle();
+    $("#add-location-form").hide();
 });
 
-
+// Show/hide the form to add a new location
 $("#add-location").on("click", () => {
-    myMap.locations.push({location_name: "some location", location_type: "some type"});
+    // myMap.locations.push({location_name: "some location", location_type: "some type"});
+    $("#add-location-form").toggle();
+    $("#add-item-form").hide();
 });
