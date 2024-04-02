@@ -16,3 +16,7 @@
 #feedback {
     display: none;
 }
+
+#add-item-form, #add-location-form {
+    display: none;
+}
