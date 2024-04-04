@@ -3,6 +3,10 @@
     width: 100%;
 }
 
+.map-cell {
+    height: 50px;
+}
+
 .marker {
     background-color: cyan;
     height: 20px;

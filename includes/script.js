@@ -109,7 +109,8 @@ class MapBuilder {
         if (validateItem(itemName)) {
             let item = {
                 item_name: itemName,
-                item_color: itemColor
+                item_color: itemColor,
+                cell: "B6"
             };
 
             this.assets.push(item);
@@ -123,7 +124,8 @@ class MapBuilder {
         if (validateItem(itemName)) {
             let item = {
                 location_name: itemName,
-                location_type: itemType
+                location_type: itemType,
+                cell: "B6"
             };
             
             this.locations.push(item);
@@ -135,27 +137,41 @@ class MapBuilder {
 // Instantiate a new MapBuilder object
 let myMap = new MapBuilder();
 
-// Display the data in the MapBuilder object when clicked
-$("#load-map").on("click", () => {
-    $("#map-container").html("");
+// Function that reloads the map
+
+const reloadMap = () => {
+    $("#map-container").children().html("");
 
     for (let i = 0; i < myMap.locations.length; i++) {
-        for (let key in myMap.locations[i]) {
-            document.querySelector("#map-container").innerHTML += `${key}: ${myMap.locations[i][key]}`;
-        }
+        let cellName = myMap.locations[i].cell;
+        let cellContent = myMap.locations[i].location_name + " " + myMap.locations[i].location_type;
+        $(`#${cellName}`).html(cellContent);
     }
-});
+}
+
+// Display the data in the MapBuilder object when clicked
+$("#load-map").on("click", reloadMap);
 
 // Show/hide the form to add a new item/asset
 $("#add-item").on("click", () => {
-    // myMap.assets.push({asset_name: "some asset", asset_color:"red"});
     $("#add-item-form").toggle();
     $("#add-location-form").hide();
 });
 
 // Show/hide the form to add a new location
 $("#add-location").on("click", () => {
-    // myMap.locations.push({location_name: "some location", location_type: "some type"});
     $("#add-location-form").toggle();
     $("#add-item-form").hide();
 });
+
+$("#add-location-form").on("submit", (event) => {
+    event.preventDefault();
+    myMap.addLocation();
+    reloadMap();
+})
+
+$("#add-item-form").on("submit", (event) => {
+    event.preventDefault();
+    myMap.addItem();
+    reloadMap();
+})
