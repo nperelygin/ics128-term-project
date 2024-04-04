@@ -72,6 +72,7 @@ class MapBuilder {
         try {
             const locationResponse = await fetch("https://natalie.json.compsci.cc/locations", {
                 method: "POST",
+                mode: "cors",
                 headers: {
                     "Content-Type":"application/json",
                 },
@@ -83,6 +84,7 @@ class MapBuilder {
 
             const itemResponse = await fetch("https://natalie.json.compsci.cc/items", {
                 method: "POST",
+                mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -95,12 +97,19 @@ class MapBuilder {
         } catch (e) {
             console.log("Error in saving data");
         }
-    }
+    } */
 
     // Clear the map and its data
-    async ClearMap() {
-        
-    } */
+    /*async ClearMap() {
+        await fetch('https://natalie.json.compsci.cc/locations/1', {
+                method: "DELETE",
+                mode: "cors",
+                cache: "default",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+    }*/
 
     addItem() {
         let itemName = $("#item-name").prop("value");
@@ -134,18 +143,31 @@ class MapBuilder {
         
 }
 
+let dropItem = (event) => {
+    event.preventDefault();
+    event.dataTransfer.getData("text");
+    
+
+}
+
 // Instantiate a new MapBuilder object
 let myMap = new MapBuilder();
 
 // Function that reloads the map
-
 const reloadMap = () => {
     $("#map-container").children().html("");
 
     for (let i = 0; i < myMap.locations.length; i++) {
         let cellName = myMap.locations[i].cell;
         let cellContent = myMap.locations[i].location_name + " " + myMap.locations[i].location_type;
-        $(`#${cellName}`).html(cellContent);
+        $(`#${cellName}`).append(cellContent);
+    }
+
+    for (let k = 0; k < myMap.assets.length; k++) {
+        let cellName = myMap.assets[k].cell;
+        // let cellContent = myMap.assets[k].item_name + " " + myMap.assets[k].item_color;
+        let cellContent = `<div class="marker ${myMap.assets[k].item_color}" draggable="true"></div>`;
+        $(`#${cellName}`).append(cellContent);
     }
 }
 
@@ -174,4 +196,10 @@ $("#add-item-form").on("submit", (event) => {
     event.preventDefault();
     myMap.addItem();
     reloadMap();
+})
+
+// Allow drag and drop on the map container's children
+
+$("#map-container").children().on("dragover", (event) => {
+    event.preventDefault();
 })

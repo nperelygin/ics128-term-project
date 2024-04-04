@@ -4,17 +4,40 @@
 }
 
 .map-cell {
-    height: 50px;
+    aspect-ratio: 1/1;
+    padding: 0;
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
 }
 
 .marker {
-    background-color: cyan;
-    height: 20px;
-    width: 20px;
-    border-radius: 25%;
-    position: absolute;
-    left: 0;
-    top: 0;
+    width: 25%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.blue {
+    background-color: blue;
+}
+
+.gold {
+    background-color: gold;
+}
+
+.black {
+    background-color: black;
+}
+
+.white {
+    background-color: white;
 }
 
 #feedback {
