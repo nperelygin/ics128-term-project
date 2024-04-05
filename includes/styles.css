@@ -1,6 +1,7 @@
 #map-container {
     background-color: #ccc;
     width: 100%;
+    position: absolute;
 }
 
 .map-cell {
@@ -8,12 +9,21 @@
     padding: 0;
     border-right: 1px solid #fff;
     border-bottom: 1px solid #fff;
+    position: relative;
+}
+
+.map-cell > img {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    position: absolute;
 }
 
 .marker {
     width: 25%;
     aspect-ratio: 1/1;
     border-radius: 50%;
+    position: absolute;
 }
 
 .red {

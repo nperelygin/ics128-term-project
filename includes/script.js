@@ -127,27 +127,16 @@ class MapBuilder {
     }
 
     addLocation() {
-        let itemName = $("#location-name").prop("value");
         let itemType = $("#location-type").prop("value");
-
-        if (validateItem(itemName)) {
-            let item = {
-                location_name: itemName,
+        let item = {
                 location_type: itemType,
                 cell: "B6"
-            };
+        };
             
-            this.locations.push(item);
-        }
+        this.locations.push(item);
+        
     }
         
-}
-
-let dropItem = (event) => {
-    event.preventDefault();
-    event.dataTransfer.getData("text");
-    
-
 }
 
 // Instantiate a new MapBuilder object
@@ -159,15 +148,25 @@ const reloadMap = () => {
 
     for (let i = 0; i < myMap.locations.length; i++) {
         let cellName = myMap.locations[i].cell;
-        let cellContent = myMap.locations[i].location_name + " " + myMap.locations[i].location_type;
-        $(`#${cellName}`).append(cellContent);
+        let cellContent = myMap.locations[i].location_type;
+        $(`#${cellName}`).append(`<img id='tile-${i}' class='drag' src='includes/images/${cellContent}.png'/>`);
+
+        // Make the newly created tile draggable
+        document.querySelector(`#tile-${i}`).addEventListener("dragstart", (event) => {
+            event.dataTransfer.setData("text/plain", event.target.id);
+        })
     }
 
     for (let k = 0; k < myMap.assets.length; k++) {
         let cellName = myMap.assets[k].cell;
         // let cellContent = myMap.assets[k].item_name + " " + myMap.assets[k].item_color;
-        let cellContent = `<div class="marker ${myMap.assets[k].item_color}" draggable="true"></div>`;
+        let cellContent = `<div id='marker-${k}' class="marker ${myMap.assets[k].item_color}" draggable="true"></div>`;
         $(`#${cellName}`).append(cellContent);
+
+        // Make the new marker draggable
+        document.querySelector(`#marker-${k}`).addEventListener("dragstart", (event) => {
+            event.dataTransfer.setData("text/plain", event.target.id);
+        })
     }
 }
 
@@ -190,16 +189,43 @@ $("#add-location-form").on("submit", (event) => {
     event.preventDefault();
     myMap.addLocation();
     reloadMap();
-})
+});
 
 $("#add-item-form").on("submit", (event) => {
     event.preventDefault();
     myMap.addItem();
     reloadMap();
-})
+});
 
-// Allow drag and drop on the map container's children
+// Make the map cells droppable elements
+let mapCells = document.querySelectorAll(".map-cell");
 
-$("#map-container").children().on("dragover", (event) => {
-    event.preventDefault();
-})
+for (let i = 0; i < mapCells.length; i++) {
+    mapCells[i].addEventListener("dragover", (event) => {
+        event.preventDefault();
+    })
+}
+
+for (let k = 0; k < mapCells.length; k++) {
+    mapCells[k].addEventListener("drop", (event) => {
+        event.preventDefault();
+        let tile = event.dataTransfer.getData("text/plain");
+
+        event.target.appendChild(document.querySelector(`#${tile}`));
+
+        // Extract the numerical index from the id of the thing that was dragged
+        let re = /\d+/g;
+        let targetID = re.exec(tile);
+
+        let isLocation = /tile/g; // Check if it is a location or an item
+
+        if (isLocation.test(tile)) {
+            // Update the JS object of the locations to the new cell
+            myMap.locations[targetID].cell = document.querySelector(`#${tile}`).parentElement.id;
+        } else {
+            // Update the JS object of the items to the new cell
+            myMap.assets[targetID].cell = document.querySelector(`#${tile}`).parentElement.id;
+        }
+        
+    })
+}

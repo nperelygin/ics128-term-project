@@ -84,15 +84,42 @@
         </form>
 
         <form id="add-location-form">
-            <label for="location-name">Location Name</label>
-            <input type="text" id="location-name" name="location-name" class="form-control w-auto d-inline">
-
-            <label for="location-type">Location Type</label>
+            <label for="location-type">Tile</label>
             <select id="location-type" name="location-type" class="form-select w-auto d-inline">
-                <option value="forest" selected>Forest</option>
-                <option value="water">Water</option>
-                <option value="settlement">Settlement</option>
-                <option value="anomaly">Anomaly</option>
+                <optgroup label="Coast">
+                    <option value="coast_s_1" selected>Coast South 1</option>
+                    <option value="coast_s_2">Coast South 2</option>
+                    <option value="coast_sw">Coast Southwest</option>
+                    <option value="coast_sw_p">Coast Southwest Pen.</option>
+                    <option value="coast_w_1">Coast West 1</option>
+                    <option value="coast_w_2">Coast West 2</option>
+                    <option value="coast_nw">Coast Northwest</option>
+                    <option value="coast_n_1">Coast North 1</option>
+                    <option value="coast_n_2">Coast North 2</option>
+                    <option value="coast_ne">Coast Northeast</option>
+                    <option value="coast_e_1">Coast East 1</option>
+                    <option value="coast_e_2">Coast East 2</option>
+                    <option value="coast_se">Coast Southeast</option>
+                    <option value="delta_s">Delta South</option>
+                </optgroup>
+
+                <optgroup label="River">
+                    <option value="river_fork_ns">River Fork NS</option>
+                    <option value="river_ew_1">River EW 1</option>
+                    <option value="river_ew_2">River EW 2</option>
+                    <option value="river_source_ew">River Source EW</option>
+                    <option value="river_ns_1">River NS 1</option>
+                    <option value="river_ns_2">River NS 2</option>
+                    <option value="river_source_ns">River Source NS</option>
+                </optgroup>
+               
+                <optgroup label="Terrain">
+                    <option value="grass">Grass</option>
+                    <option value="flowers">Flowers</option>
+                    <option value="forest_broadleaf">Forest Broadleaf</option>
+                    <option value="forest_pine">Forest Pine</option>
+                    <option value="lake">Lake</option>
+                </optgroup>
             </select>
 
             <button class="btn btn-secondary" type="submit" id="submit-location">Confirm</button>
