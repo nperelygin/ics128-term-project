@@ -149,7 +149,8 @@ const reloadMap = () => {
     for (let i = 0; i < myMap.locations.length; i++) {
         let cellName = myMap.locations[i].cell;
         let cellContent = myMap.locations[i].location_type;
-        $(`#${cellName}`).append(`<img id='tile-${i}' class='drag' src='includes/images/${cellContent}.png'/>`);
+        // $(`#${cellName}`).append(`<img id='tile-${i}' class='tile' src='includes/images/${cellContent}.png' >`);
+        $(`#${cellName}`).append(`<div id='tile-${i}' class='tile' draggable="true" style="background-image: url('includes/images/${cellContent}.png');"></div>`)
 
         // Make the newly created tile draggable
         document.querySelector(`#tile-${i}`).addEventListener("dragstart", (event) => {
@@ -203,6 +204,7 @@ let mapCells = document.querySelectorAll(".map-cell");
 for (let i = 0; i < mapCells.length; i++) {
     mapCells[i].addEventListener("dragover", (event) => {
         event.preventDefault();
+
     })
 }
 
@@ -210,7 +212,6 @@ for (let k = 0; k < mapCells.length; k++) {
     mapCells[k].addEventListener("drop", (event) => {
         event.preventDefault();
         let tile = event.dataTransfer.getData("text/plain");
-
         event.target.appendChild(document.querySelector(`#${tile}`));
 
         // Extract the numerical index from the id of the thing that was dragged

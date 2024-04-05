@@ -12,11 +12,15 @@
     position: relative;
 }
 
-.map-cell > img {
-    max-width: 100%;
+.tile {
+    width: 100%;
     padding: 0;
     margin: 0;
     position: absolute;
+    aspect-ratio: 1/1;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .marker {
@@ -24,6 +28,7 @@
     aspect-ratio: 1/1;
     border-radius: 50%;
     position: absolute;
+    z-index: 1;
 }
 
 .red {
