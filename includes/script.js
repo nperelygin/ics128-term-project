@@ -63,11 +63,13 @@ class MapBuilder {
                 this.locations = await locationResponse.json();
                 this.assets = await itemResponse.json();
                 $("#feedback").html("Map data ready to use");
+                $("#feedback").addClass("alert-success");
                 $("#feedback").fadeOut(1000);
                 reloadMap();
             }
         } catch(e) {
             $("#feedback").html("Map data could not be loaded. Try again later!");
+            $("#feedback").addClass("alert-danger");
         }
     }
 
@@ -102,6 +104,9 @@ class MapBuilder {
 // Instantiate a new MapBuilder object
 let myMap = new MapBuilder();
 
+// Get all the map cells
+let mapCells = document.querySelectorAll(".map-cell");
+
 // Drag and drop functions
 // Get the id of the element being dragged
 let startDrag = (event) => {
@@ -129,6 +134,24 @@ let afterDrop = (event) => {
     }
 };
 
+// Make sure all the cells as listed in the JS object correspond to where they actually appear on the map
+let updateIDs = () => {
+    let selection = document.querySelectorAll(".selected");
+    for (i = 0; i < selection.length; i++) {
+        let selectionID = selection[i].id;
+        let re = /\d+/g;
+        let strippedID = re.exec(selectionID);
+
+        let isLocation = /tile/g;
+
+        if (isLocation.test(selectionID)) {
+            myMap.locations[strippedID].cell = selection[i].parentElement.id;
+        } else {
+            myMap.assets[strippedID].cell = selection[i].parentElement.id;
+        }
+    }
+}
+
 // Function that reloads the map
 const reloadMap = () => {
     $("#map-container").children().html("");
@@ -136,28 +159,49 @@ const reloadMap = () => {
     for (let i = 0; i < myMap.locations.length; i++) {
         let cellName = myMap.locations[i].cell;
         let cellContent = myMap.locations[i].location_type;
-        // $(`#${cellName}`).append(`<img id='tile-${i}' class='tile' src='includes/images/${cellContent}.png' >`);
         $(`#${cellName}`).append(`<div id='tile-${i}' class='tile' draggable="true" style="background-image: url('includes/images/${cellContent}.png');"></div>`)
 
         // Make the newly created tile draggable
         document.querySelector(`#tile-${i}`).addEventListener("dragstart", startDrag);
 
-        document.querySelector(`#tile-${i}`).addEventListener("touchmove", (event) => {
-            let touch = event.targetTouches[0];
-            document.querySelector(`#tile-${i}`).style.left = touch.pageX + "px";
-            document.querySelector(`#tile-${i}`).style.top = touch.pageY + "px";
+        // Fallback in case drag and drop is not available
+        $(`#tile-${i}`).on("click", () => {
+            $(`#tile-${i}`).toggleClass("selected");
         });
+        
+        // Add a click event listener to each cell
+        for (let j = 0; j < mapCells.length; j++) {
+            $(mapCells[j]).on("click", () => {
+                // When clicked, append anything that has the 'selected' class to that cell
+                $(mapCells[j]).append($(".selected"));
+                updateIDs();
+            })
+        }
     }
 
     for (let k = 0; k < myMap.assets.length; k++) {
         let cellName = myMap.assets[k].cell;
-        // let cellContent = myMap.assets[k].item_name + " " + myMap.assets[k].item_color;
         let cellContent = `<div id='marker-${k}' class="marker ${myMap.assets[k].item_color}" draggable="true"></div>`;
         $(`#${cellName}`).append(cellContent);
 
         // Make the new marker draggable
         document.querySelector(`#marker-${k}`).addEventListener("dragstart", startDrag);
+
+        // Fallback in case drag and drop is not available
+        $(`#marker-${k}`).on("click", () => {
+            $(`#marker-${k}`).toggleClass("selected");
+        });
+        
+        // Add a click event listener to each cell
+        for (let j = 0; j < mapCells.length; j++) {
+            $(mapCells[j]).on("click", () => {
+                // When clicked, append anything that has the 'selected' class to that cell
+                $(mapCells[j]).append($(".selected"));
+                updateIDs();
+            })
+        }
     }
+
 }
 
 const saveMap = async () => {
@@ -187,7 +231,7 @@ const saveMap = async () => {
                     });
 
                 } else {
-                    // Otherwise, add a new record with post
+                    // Otherwise, add a new record with POST
                     await fetch("https://natalie.json.compsci.cc/locations", {
                         method: "POST",
                         mode: "cors",
@@ -204,6 +248,8 @@ const saveMap = async () => {
                  
             } catch(error) {
                 $("#feedback").html("Error in saving data, please try again later");
+                $("#feedback").removeClass("alert-success");
+                $("#feedback").addClass("alert-danger");
                 $("#feedback").fadeIn();
             }
     }
@@ -251,6 +297,8 @@ const saveMap = async () => {
              
         } catch(error) {
             $("#feedback").html("Error in saving data, please try again later");
+            $("#feedback").removeClass("alert-success");
+            $("#feedback").addClass("alert-danger");
             $("#feedback").fadeIn();
         }
     }
@@ -285,6 +333,7 @@ const purgeMap = async () => {
             }
         } catch (error) {
             $("#feedback").html("Map data could not be deleted, please try again later");
+            $("#feedback").addClass("alert-danger");
             $("#feedback").fadeIn();
         }
         
@@ -316,6 +365,7 @@ const purgeMap = async () => {
             }
         } catch(error) {
             $("#feedback").html("Map data could not be deleted, please try again later");
+            $("#feedback").addClass("alert-danger");
             $("#feedback").fadeIn();
         }
     }
@@ -325,8 +375,18 @@ const purgeMap = async () => {
 
 }
 
-// Display the data in the MapBuilder object when clicked
-$("#load-map").on("click", reloadMap);
+// Make the map cells droppable elements
+// The drag events won't work with jQuery, so I have to use vanilla JS here
+for (let i = 0; i < mapCells.length; i++) {
+    mapCells[i].addEventListener("dragover", (event) => {
+        // Allow the map cells to be dropped
+        event.preventDefault();
+    });
+}
+
+for (let k = 0; k < mapCells.length; k++) {
+    mapCells[k].addEventListener("drop", afterDrop);
+}
 
 // Save the map data when the button is clicked
 $("#save-map").on("click", saveMap);
@@ -346,28 +406,16 @@ $("#add-location").on("click", () => {
     $("#add-item-form").hide();
 });
 
+// When the confirm button is clicked, add a new location
 $("#add-location-form").on("submit", (event) => {
-    event.preventDefault();
+    event.preventDefault(); // prevents the form from actually being submitted
     myMap.addLocation();
     reloadMap();
 });
 
+// When the confirm button is clicked, add a new item
 $("#add-item-form").on("submit", (event) => {
     event.preventDefault();
     myMap.addItem();
     reloadMap();
 });
-
-// Make the map cells droppable elements
-let mapCells = document.querySelectorAll(".map-cell");
-
-for (let i = 0; i < mapCells.length; i++) {
-    mapCells[i].addEventListener("dragover", (event) => {
-        // Allow the map cells to be dropped
-        event.preventDefault();
-    });
-}
-
-for (let k = 0; k < mapCells.length; k++) {
-    mapCells[k].addEventListener("drop", afterDrop);
-}

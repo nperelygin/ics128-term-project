@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="includes/styles.css"></script>
 </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Natalie Perelygin</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -56,10 +56,9 @@
     
     <div class="container-fluid">
         <!-- Error feedback -->
-        <div id="feedback"></div>
+        <div id="feedback" class="alert"></div>
 
-        <!-- Load, Save, or Delete Map Data -->
-        <button class="btn btn-primary" id="load-map">Load Map</button>
+        <!-- Save or Delete Map Data -->
         <button class="btn btn-success" id="save-map">Save Map</button>
         <button class="btn btn-danger" id="clear-map">Clear Map</button>
 
@@ -67,7 +66,7 @@
         <button class="btn btn-primary" id="add-item">Add Item</button>
         <button class="btn btn-primary" id="add-location">Add Location</button>
 
-        <form id="add-item-form">
+        <form id="add-item-form" class="m-3">
             <label for="item-name">Item Name</label>
             <input type="text" id="item-name" name="item-name" class="form-control d-inline w-auto">
 
@@ -83,7 +82,7 @@
             <button class="btn btn-secondary" type="submit" id="submit-item">Confirm</button>
         </form>
 
-        <form id="add-location-form">
+        <form id="add-location-form" class="m-3">
             <label for="location-type">Tile</label>
             <select id="location-type" name="location-type" class="form-select w-auto d-inline">
                 <optgroup label="Coast">
@@ -126,7 +125,7 @@
         </form>
 
         <!-- Map -->
-        <div id="map-container" class="row">
+        <div id="map-container" class="row mt-3">
             <div id="A1" class="map-cell col-1"></div>
             <div id="A2" class="map-cell col-1"></div>
             <div id="A3" class="map-cell col-1"></div>

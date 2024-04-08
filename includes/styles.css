@@ -1,3 +1,10 @@
+/* 
+    ICS 128 Term Project: Map Builder
+    Natalie Perelygin
+*/
+
+
+/* Main styles for the map container */
 #map-container {
     background-color: #ccc;
     width: 100%;
@@ -12,6 +19,7 @@
     position: relative;
 }
 
+/* Styles for the background tiles */
 .tile {
     width: 100%;
     padding: 0;
@@ -23,12 +31,17 @@
     background-position: center center;
 }
 
+/* Styles for the circular markers on the map */
 .marker {
     width: 25%;
     aspect-ratio: 1/1;
     border-radius: 50%;
     position: absolute;
     z-index: 1;
+}
+
+.selected {
+    border: 2px solid orange;
 }
 
 .red {
@@ -55,10 +68,12 @@
     background-color: white;
 }
 
+/* Hide error feedback by default */
 #feedback {
     display: none;
 }
 
+/* Hide add item/location forms until they are opened by user */
 #add-item-form, #add-location-form {
     display: none;
 }
